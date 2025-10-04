@@ -19,6 +19,6 @@ export default defineConfig(({ mode }) => {
           '@': path.resolve(__dirname, '.'),
         }
       },
-      base: "/LP-Simulator/"
+      base: '/LP-Simulator/'
     };
 });
