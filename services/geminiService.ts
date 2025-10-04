@@ -4,17 +4,23 @@ import { type Simulation } from '../types';
 
 const API_KEY = process.env.API_KEY;
 
+let ai: GoogleGenAI | null = null;
 if (!API_KEY) {
-  console.warn("API_KEY environment variable not set. Price fetching will be disabled.");
+  console.warn("API_KEY environment variable not set. Price fetching will use a local fallback randomizer.");
+} else {
+  try {
+    ai = new GoogleGenAI({ apiKey: API_KEY });
+  } catch (err) {
+    console.warn('Failed to initialize GoogleGenAI client, falling back to local randomizer.', err);
+    ai = null;
+  }
 }
 
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
-
 export const fetchMockTokenPrices = async (simulation: Simulation): Promise<{ priceA: number; priceB: number }> => {
-  if (!API_KEY) {
-    // Fallback to a simple randomizer if API key is not available
-    const priceA = simulation.latestPriceA * (1 + (Math.random() - 0.5) * 0.1); // +/- 5% change
-    const priceB = simulation.latestPriceB * (1 + (Math.random() - 0.5) * 0.02); // +/- 1% change for stablecoin
+  // If no API client, fallback to a simple randomized price generator
+  if (!ai) {
+    const priceA = simulation.latestPriceA * (1 + (Math.random() - 0.5) * 0.1); // +/- ~5% change
+    const priceB = simulation.latestPriceB * (1 + (Math.random() - 0.5) * 0.02); // +/- ~1% change for stablecoin
     return { priceA: parseFloat(priceA.toFixed(2)), priceB: parseFloat(priceB.toFixed(4)) };
   }
 
