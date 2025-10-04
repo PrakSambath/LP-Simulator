@@ -1,0 +1,5 @@
+{
+  "name": "LP Simulator",
+  "description": "A sophisticated Liquidity Provider (LP) simulator to model potential returns, impermanent loss, and fee generation based on market conditions, APR, and concentrated liquidity ranges. Users can create and manage multiple simulations, fetch mock real-time prices using AI, and save their scenarios locally.",
+  "requestFramePermissions": []
+}
